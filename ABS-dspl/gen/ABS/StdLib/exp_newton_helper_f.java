@@ -1,0 +1,8 @@
+package ABS.StdLib;
+// abs/lang/abslang.abs:119:0: 
+public final class exp_newton_helper_f implements org.abs_models.backend.java.lib.types.ABSFunction {
+    private exp_newton_helper_f() { }
+    public static org.abs_models.backend.java.lib.types.ABSRational apply(org.abs_models.backend.java.lib.types.ABSRational acc, org.abs_models.backend.java.lib.types.ABSRational x, org.abs_models.backend.java.lib.types.ABSInteger next_round, org.abs_models.backend.java.lib.types.ABSRational numerator, org.abs_models.backend.java.lib.types.ABSInteger denominator, org.abs_models.backend.java.lib.types.ABSRational epsilon) {
+        return (new org.abs_models.backend.java.lib.expr.Let() { public org.abs_models.backend.java.lib.types.ABSRational in(final org.abs_models.backend.java.lib.types.ABSRational epsilon, final org.abs_models.backend.java.lib.types.ABSRational acc, final org.abs_models.backend.java.lib.types.ABSInteger next_round, final org.abs_models.backend.java.lib.types.ABSRational x, final org.abs_models.backend.java.lib.types.ABSRational numerator, final org.abs_models.backend.java.lib.types.ABSInteger denominator, final org.abs_models.backend.java.lib.types.ABSRational next) { return org.abs_models.backend.java.lib.expr.BinOp.lt(ABS.StdLib.abs___f.apply(next),epsilon).toBoolean() ? acc.add(next) : ABS.StdLib.exp_newton_helper_f.apply(acc.add(next), x, next_round.add(org.abs_models.backend.java.lib.types.ABSInteger.fromLong(1L)), numerator.multiply(x), denominator.multiply(next_round), epsilon); }}.in(epsilon, acc, next_round, x, numerator, denominator, numerator.multiply(x).divide(denominator.multiply(next_round))));
+    }
+}
