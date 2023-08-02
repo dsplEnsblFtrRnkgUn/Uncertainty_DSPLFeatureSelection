@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<smartHome:Home
+    xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:smartHome="http://www.eclipse.org/mdt/ocl/oclinecore/smartHome"
+    xsi:schemaLocation="http://www.eclipse.org/mdt/ocl/oclinecore/smartHome smartHome.ecore"
+    name="">
+  <room name="R1"
+      alarm="true"
+      highTemp="40">
+    <heaters
+        name="H1"
+        temp="41"/>
+    <doors name="D1"
+        isOpen="false"/>
+    <windows
+        name="W1"/>
+    <lights
+        name="L1"
+        isON="false"
+        door="//@room.0/@doors.0"/>
+    <lights
+        name="L2"
+        isON="false"
+        door="//@room.0/@doors.0"/>
+  </room>
+</smartHome:Home>
