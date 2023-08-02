@@ -1,0 +1,104 @@
+module SmartHome_Reconfiguration;
+import * from ABS.Meta;
+interface Runtime_Product{
+    Unit run();
+}
+interface Reconfiguration {
+    Unit setCurrentProduct(Product p);
+    StateUpdate getStateUpdate();
+    Unit setStateUpdate(StateUpdate u);
+}
+interface StateUpdate {
+    String getName();
+}
+class Runtime_ProductImpl implements Runtime_Product, Reconfiguration, StateUpdate{
+
+    Unit setCurrentProduct(Product p){
+	 this.setCurrentProduct(p);
+    }
+    Unit setStateUpdate(StateUpdate u){
+         this.setStateUpdate(u);
+    }
+    String getName(){
+	String getname = ""; Product currentP;
+	Runtime rt = new Runtime();
+        ProductLine pl = rt.getProductLine();
+	currentP = pl.getCurrentProduct();
+        
+	return currentP.getName();
+    }
+        StateUpdate getStateUpdate(){
+	StateUpdate upd = this.getStateUpdate();
+        this.setStateUpdate(upd);
+
+	return upd;	
+    }
+    Unit run(){
+	Product currentP;
+	Product targetP;
+	println("Begining of process!");
+	Runtime rt = new Runtime();
+        ProductLine pl = rt.getProductLine();
+	currentP = pl.getCurrentProduct();
+	Product first = pl.getProduct("Num1");
+	Product secomd = pl.getProduct("Num2");
+	Product third = pl.getProduct("Num3");
+	String st = currentP.getName();
+        if ( st == "Num1" ) {
+	    targetP = pl.getProduct("Num3");
+	    this.setCurrentProduct(targetP);
+	    StateUpdate upd = this.getStateUpdate(); 
+	    this.setStateUpdate(upd);
+	}
+	else if (st == "Num3" ) {
+	    // currentP should be reconfigure
+	}
+    }
+}
+
+{  //main block
+    Runtime_Product improved_product = new Runtime_ProductImpl();
+     improved_product.run();
+}
+
+delta DFirst;
+uses SmartHome_Reconfiguration;
+adds class MessageImp1 implements Message{
+    Unit show(){
+	//println("The pervious message is replaced with deltaFirst");
+    }
+}
+delta DSecond;
+uses SmartHome_Reconfiguration;
+adds class MessageImp2 implements Message{
+    Unit show(){
+	//
+    }
+}
+delta DThird;
+uses SmartHome_Reconfiguration;
+adds class MessageImp3 implements Message{
+    Unit show(){
+	//
+    }
+}
+    modifies class Reconfiguration{
+	//
+    }
+
+productline Reconfigure;
+features First, Second, Third;
+
+delta DFirst when First;
+delta DSecond when Second;
+delta DThird when Third;
+
+product Num1(First);
+product Num2(Second);
+product Num3(Third);
+
+root Reconfigure{
+    group [1..*]{
+	First, Second, Third
+	    }
+}

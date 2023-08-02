@@ -1,0 +1,141 @@
+module SmartHome;
+import * from ABS.Meta;
+interface Runtime_Product{ Unit run(); }
+interface Reconfiguration {
+    Unit setCurrentProduct(Product p);
+    StateUpdate getStateUpdate();
+    Unit setStateUpdate(StateUpdate u);
+                       }
+interface StateUpdate { String getName(); }
+class Runtime_ProductImpl implements Runtime_Product, Reconfiguration, StateUpdate{  
+
+    Unit run(){
+	Product currentP;
+	Product targetP;
+	println("Begining of process!");
+	Runtime rt = new Runtime();
+        ProductLine pl = rt.getProductLine();
+	currentP = pl.getCurrentProduct();
+	Product first = pl.getProduct("StoreHouse");
+	Product secomd = pl.getProduct("ResidentalHouse");
+	String st = currentP.getName();
+        if ( st == "StoreHouse" ) {
+	    targetP = pl.getProduct("ResidentalHouse");
+	    this.setCurrentProduct(targetP);
+	    StateUpdate upd = this.getStateUpdate(); 
+	    this.setStateUpdate(upd);
+	}
+    }
+    Unit setCurrentProduct(Product p){ this.setCurrentProduct(p); }
+    Unit setStateUpdate(StateUpdate u){ this.setStateUpdate(u); }
+    String getName(){
+	String getname = ""; Product currentP;
+	Runtime rt = new Runtime();
+        ProductLine pl = rt.getProductLine();
+	currentP = pl.getCurrentProduct();        
+	return currentP.getName(); }
+    StateUpdate getStateUpdate(){
+	StateUpdate update = this.getStateUpdate();
+        this.setStateUpdate(update);
+	return update;}
+      }
+
+{  //main block
+    Runtime_Product improved_product = new Runtime_ProductImpl();
+     improved_product.run();
+}
+
+
+    
+delta DDoor;
+uses SmartHome;
+
+delta DOpen;
+uses SmartHome;
+modifies class Runtime_ProductImpl{
+    modifies  Bool door (String d_name, Bool d_IsOpen, Int d_uWeight, Int d_rank)
+        {if (threshold>d_rank) skip;}
+	adds Unit ligh_on()
+	{this.l_IsOn=True;}
+                            }
+
+delta DClose;
+uses SmartHome;
+
+delta DLight;
+uses SmartHome;
+
+delta DLighton;
+uses SmartHome;
+
+delta DLightoff;
+uses SmartHome;
+
+delta DWindow;
+uses SmartHome;
+
+delta DWopen;
+uses SmartHome;
+
+delta DWclose;
+uses SmartHome;
+
+delta DHeater(Float htemp);
+uses SmartHome;
+modifies class Runtime_ProductImpl{
+        modifies  Bool heat (String h_name, Bool h_IsOpen, Int h_uWeight, Int l_rank){
+	if (l_rank < 10) skip;
+    }
+   adds Unit armed(){
+       if (have_heat)  this.aIs_On = True;
+   }
+}
+
+delta DAlarm(Bool a, Float high_Temp);
+uses SmartHome;
+
+productline SmartHome;
+features Door, Close, Open, Light, Lighton, Lightoff, Window, Wopen, Wclose, Heater, Alarm;
+delta DDoor when Door;
+delta DOpen after DDoor when Open;
+delta DClose after DDoor when Close;
+delta DLight when Light;
+delta DLighton after DLight when Lighton;
+delta DLightoff after DLight when Lightoff;
+delta DWindow when Window;
+delta DWopen after DWindow when Wopen;
+delta DWclose after DWindow when Wclose;
+delta DHeater(Heater.htemp) after DAlarm when Heater;
+delta DAlarm(Alarm.a, Alarm.high_Temp)  when Alarm;
+
+product StoreHouse (Door{isOpen=True,uWeight=0},Open,Light{isOn=True,uWeight=0},Lighton);
+product ResidentalHouse (Door{isOpen=True,uWeight=0},Open,Light{isOn=True,uWeight=0},Lighton,
+			 Window{isOpen=False,uWeight=0},Wclose,Heater{uWeight=0,htemp=41} ,
+	 Alarm{a=True,uWeight=0,high_Temp=40});
+
+root SmartHome{
+    group allof{
+Door{
+    group oneof{
+		Close { ifin: Door.uWeight== 0 && Door.isOpen == False; },
+	        Open { ifin:  Door.uWeight== 0 && Door.isOpen == True; require: Lighton; }
+	    } Bool isOpen; Int uWeight;
+	},
+	    Light{
+	    group oneof{
+		Lighton { ifin : Light.uWeight== 0 && Light.isOn == True; },
+	        Lightoff { ifin: Light.uWeight== 0 && Light.isOn == False; }
+	    } Bool isOn; Int uWeight;
+     },
+	    opt Window{
+		group oneof{
+		    Wopen{ifin:Window.uWeight== 0 &&  Window.isOpen == True; },
+		    Wclose{ifin: Window.uWeight== 0 && Window.isOpen == False; }
+		}
+		Bool isOpen; Int uWeight;
+	    },
+    opt  Heater  { ifin: Heater.uWeight== 0 && Heater.htemp >= 0 ; Int htemp;Int uWeight; },
+    opt  Alarm { ifin : Alarm.uWeight== 0 && (Alarm.a == True) <-> Heater.htemp > Alarm.high_Temp;Bool a;Int high_Temp; Int uWeight; }
+    }
+}
+
