@@ -1,0 +1,33 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: Dynamic Software Platforms
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: 'Alireza '
+    family-names: Azimi
+    email: alirezaazimmi@gmail.com
+    affiliation: >-
+      Department of Computer Engineering, Science and
+      Research Branch, Islamic Azad University, Tehran,
+      Iran 
+  - given-names: 'Mehran '
+    family-names: Mohsenzadeh
+    email: mohsenzadeh@srbiau.ac.ir
+    affiliation: >-
+      Department of Computer Engineering, Science and
+      Research Branch, Islamic Azad University, Tehran, Iran
+identifiers:
+  - type: doi
+    value: 10.1234/dspl12111
+repository-code: >-
+  https://github.com/dsplEnsblFtrRnkgUn/Uncertainty_DSPLFeatureSelection.git
+abstract: Dynamic software systems development group
+keywords:
+  - uncertainty
+  - ' Dynamic software product line'
+  - ' feature selection'
